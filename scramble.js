@@ -1,25 +1,51 @@
-let alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-export function scramble(element, text = '', character_changes = 5, delay = 50, charset = alpha) {
-    element.textContent = ''
-    let shifts = 0
-    let cycle = setInterval(() => {
-        let len = element.textContent.length
-        let suf = ''
-        if (shifts==character_changes) {
-            if (len==text.length){clearInterval(cycle)}
-            else {len++}
-            shifts = 0
+const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&()[]';
+/** Scrambles a text to reveal it in a "hackery" effect.
+ * @param {string} text Text to scramble it to
+ * @param {string} charset The character set to draw the scramble from
+ * @param {number} frequency How often to change the letter
+ * @param {number} switches How many times to switch ltters
+ */
+HTMLElement.prototype.scrambleTo = function(text, charset = alpha, frequency = 50, switches = 6) {
+    // const frequency = 50;
+    // const switches = 6;
+    if (text.length === 0) {
+        this.textContent = "";
+        return;
+    }
+    if (charset === "") {
+        charset = alpha;
+    }
+    let i = 0;
+    let content = "";
+    const interval = setInterval((() => {
+        if (i === switches) {
+            content = text.slice(0, content.length + 1);
+            i = 0;
+            if (content.length === text.length) {
+                clearInterval(interval);
+                this.textContent = text;
+                return;
+            }
         }
-        else {
-            len--
-            suf = charset[Math.floor(Math.random()*charset.length)]
-        }
-        element.textContent = text.substring(0,len) + suf
-        shifts++
-    }, delay);
-    return cycle
+        const pick = charset[Math.floor(Math.random()*charset.length)];
+        this.textContent = content + pick;
+        i++;
+    }).bind(this), frequency);
 }
-export function timedScramble(element, text, character_changes, time, charset = alpha) {
-    let delay = (time*1000) / (text.length*character_changes)
-    scramble(element, text, character_changes, delay, charset)
+
+/**
+ * Scramble to text for a given duration.
+ * @param {string} text Text to scramble to
+ * @param {string} time Time to scramble for
+ * @param {number} switches How many times to change the characters
+ * @param {string} charset Characters to use in randomization
+ */
+HTMLElement.prototype.scrambleFor = function(text, time, switches = 6, charset = alpha) {
+    let frequency = (time / text.length) / switches;
+    if (frequency >= 100 && switches === 6) {
+        const scalar = Math.ceil(frequency / 100);
+        switches *= scalar;
+        frequency /= scalar;
+    }
+    this.scrambleTo(text, charset, frequency, switches);
 }
