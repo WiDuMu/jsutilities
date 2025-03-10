@@ -6,5 +6,5 @@ const parser = new DOMParser();
  * @returns {Document} An html document
  */
 export default function parseHTMLFromString(html) {
-    return parser.parseFromString(html, "text/html");
+	return parser.parseFromString(html, "text/html");
 }
