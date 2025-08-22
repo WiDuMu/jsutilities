@@ -1,7 +1,7 @@
 /** 
  * Downloads, in parallel, the urls provided as blobs
  * @param {string[]} urls
- * @returns {Promise<any[]>}
+ * @returns {Promise<Blob[]>}
  */
 export async function parallelDownloadBlob(urls) {
 	const requests = urls.map(url => fetch(url));
@@ -13,7 +13,7 @@ export async function parallelDownloadBlob(urls) {
 /**
  * Downloads, in parallel, the urls provided
  * @param {string[]} urls
- * @returns {Promise<any[]>}
+ * @returns {Promise<string[]>}
  */
 export default async function parallelDownloadText(urls) {
 	const requests = urls.map(url => fetch(url));
