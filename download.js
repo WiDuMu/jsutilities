@@ -2,6 +2,7 @@
 
 /** The download button. We only need one :) */
 const a = document.createElement("a");
+a.hidden = true;
 
 /**
  * Accepts a file, and attempts to download it to the system.
@@ -15,5 +16,4 @@ export default function download(file) {
 	a.click();
 	URL.revokeObjectURL(link);
 	a.remove();
-	a.href = "";
 }

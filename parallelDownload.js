@@ -1,6 +1,6 @@
 /**
- * Downloads, in parallel the urls provided
- * @param {string[]} urls 
+ * Downloads, in parallel, the urls provided
+ * @param {string[]} urls
  * @returns {Promise<any[]>}
  */
 export default async function parallelDownload(urls) {
