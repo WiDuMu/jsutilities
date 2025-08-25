@@ -1,10 +1,11 @@
 import { graphemesLength, truncateCodepoints, truncateGraphemesWithUnicode, truncateToBytesWithUnicode, utf8BytesLength } from "../truncation";
 // BLNS stolen from: https://github.com/minimaxir/big-list-of-naughty-strings used under MIT License
 import blns from "./blns.json";
+import timeFunction  from "../timing.js";
 
 const testinglength = 8;
 
-blns.forEach((string, index) => {
+const tortureTest = () => blns.forEach((string, index) => {
    console.log(`Testing string #${index}: ${string}`)
    const codepoints = truncateCodepoints(string, testinglength);
    if (codepoints.length > testinglength) {
@@ -23,4 +24,13 @@ blns.forEach((string, index) => {
       console.log(`PASSED: ${bytes}, ${bytesLength}`);
    }
 });
+
+function benchmarkTruncation() {
+   for (let i = 0; i < 80; i++) {
+      blns.map(str => truncateToBytesWithUnicode(str, i));
+   }
+}
+
+
+timeFunction(timeTruncation);
 

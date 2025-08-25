@@ -50,14 +50,18 @@ export function utf8BytesLength(string) {
 export function truncateToBytesWithUnicode(string, length) {
 	if (typeof string !== "string" || length <= 0) return "";
 
-	const stringInUTF8 = UTF8ENCODER.encode(string).slice(0, length);
+	const stringInUTF8 = UTF8ENCODER.encode(string);
+
+	if (stringInUTF8.byteLength <= length) {
+		return string;
+	}
 
 	let last_char_index = 0;
-	while ((stringInUTF8[stringInUTF8.length - last_char_index - 1] & 0xC0) === 0x80 || stringInUTF8[stringInUTF8.length - last_char_index - 1] >= LEADING_BYTE_MASK) {
+	while ((stringInUTF8[length - last_char_index - 1] & 0xC0) === 0x80 || stringInUTF8[length - last_char_index - 1] >= LEADING_BYTE_MASK) {
 		last_char_index++;
 	}
 
-	const last_char_trimmed = stringInUTF8.slice(0, stringInUTF8.length - last_char_index)
+	const last_char_trimmed = stringInUTF8.slice(0, length - last_char_index)
 
 	const truncatedString = UTF8DECODER.decode(last_char_trimmed);
 
