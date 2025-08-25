@@ -1,3 +1,5 @@
+import { truncateToBytesWithUnicode } from "./truncation";
+
 const MAX_NAME_LENGTH = 255;
 
 /**
@@ -35,11 +37,7 @@ export function sanitizeFilename(filename, options) {
       filename = "unknown";
    }
 
-   const filenameUTF8 = UTF8ENCODER.encode(filename);
-   if (filenameUTF8.byteLength > MAX_NAME_LENGTH) {
-      const graphemes = [...filename];
-      filename = graphemes.slice(0, MAX_NAME_LENGTH).join("");
-   }
+   filename = truncateToBytesWithUnicode(filename, MAX_NAME_LENGTH);
 
    filename = filename.slice(0, MAX_NAME_LENGTH);
    return filename.length > MAX_NAME_LENGTH ? filename.slice(0, MAX_NAME_LENGTH) : filename;
