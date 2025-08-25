@@ -56,10 +56,10 @@ export function truncateToBytesWithUnicode(string, length) {
 		return string;
 	}
 
+	// const stupid = 0b10000000;
 	let truncateIndex = 0;
 	for (let i = 0; i < length; i++) {
-		// #TODO maybe replace with > 192 check?
-		if ((stringInUTF8 & LEADING_BYTE_MASK) !== 0b10000000) {
+		if (stringInUTF8[i] < LEADING_BYTE_MASK) {
 			truncateIndex = i + 1;
 		}
 	}
