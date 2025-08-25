@@ -53,7 +53,7 @@ export function truncateToBytesWithUnicode(string, length) {
 	const stringInUTF8 = UTF8ENCODER.encode(string).slice(0, length);
 
 	let last_char_index = 0;
-	while ((stringInUTF8[stringInUTF8.length - last_char_index - 1] & 0xC0) === 0x80 || stringInUTF8[stringInUTF8.length - last_char_index - 1] > 192) {
+	while ((stringInUTF8[stringInUTF8.length - last_char_index - 1] & 0xC0) === 0x80 || stringInUTF8[stringInUTF8.length - last_char_index - 1] >= LEADING_BYTE_MASK) {
 		last_char_index++;
 	}
 
