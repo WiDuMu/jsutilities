@@ -2,24 +2,23 @@ import { graphemesLength, truncateCodepoints, truncateGraphemesWithUnicode, trun
 // BLNS stolen from: https://github.com/minimaxir/big-list-of-naughty-strings used under MIT License
 import blns from "./blns.json";
 
-const testinglength = 3;
+const testinglength = 8;
 
 blns.forEach((string, index) => {
-   console.log(`Testing string #${index}`)
+   console.log(`Testing string #${index}: ${string}`)
    const codepoints = truncateCodepoints(string, testinglength);
    if (codepoints.length > testinglength) {
-      console.error(`Codepoints truncation: FAILED, length: ${codepoints.length}, string: ${string}, truncated: ${codepoints}`);
+      console.error(`Codepoints truncation: FAILED, length: ${codepoints.length}, truncated: ${codepoints}`);
    } 
    const graphemes = truncateGraphemesWithUnicode(string, testinglength);
    const graphemeStringLength = graphemesLength(graphemes)
    if (graphemeStringLength > testinglength) {
-      console.error(`Graphemes truncation: FAILED, length: ${graphemeStringLength}, string: ${string}, truncated: ${graphemes}`);
-   } 
+      console.error(`Graphemes truncation: FAILED, length: ${graphemeStringLength}, truncated: ${graphemes}`);
+   }
    const bytes = truncateToBytesWithUnicode(string, testinglength);
    const bytesLength = utf8BytesLength(bytes);
    if (bytesLength > testinglength) {
-      const bytesCodepoints = [...bytes].map(character => `\\u${character.charCodeAt(0)}`).join('');
-      console.error(`Bytes trunctation: FAILED, length: ${bytesLength}, string: ${string}, truncated: ${bytesCodepoints}, ${bytes}`);
+      console.error(`Bytes trunctation: FAILED, length: ${bytesLength}, truncated: ${bytes}`);
    } else {
       console.log(`PASSED: ${bytes}, ${bytesLength}`);
    }

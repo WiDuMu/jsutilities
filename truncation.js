@@ -29,7 +29,7 @@ export function truncateGraphemesWithUnicode(string, length) {
 }
 
 const UTF8ENCODER = new TextEncoder();
-const UTF8DECODER = new TextDecoder();
+const UTF8DECODER = new TextDecoder("utf-8");
 
 /** Two bits in front are a leading byte for a multi-line character */
 const LEADING_BYTE_MASK = 0b11000000;
@@ -50,22 +50,16 @@ export function utf8BytesLength(string) {
 export function truncateToBytesWithUnicode(string, length) {
 	if (typeof string !== "string" || length <= 0) return "";
 
-	const stringInUTF8 = UTF8ENCODER.encode(string);
+	const stringInUTF8 = UTF8ENCODER.encode(string).slice(0, length);
 
-	if (stringInUTF8.byteLength <= length) {
-		return string;
+	let last_char_index = 0;
+	while ((stringInUTF8[stringInUTF8.length - last_char_index - 1] & 0xC0) === 0x80 || stringInUTF8[stringInUTF8.length - last_char_index - 1] > 192) {
+		last_char_index++;
 	}
 
-	// const stupid = 0b10000000;
-	let truncateIndex = 0;
-	for (let i = 0; i < length; i++) {
-		if (stringInUTF8[i] < LEADING_BYTE_MASK) {
-			truncateIndex = i + 1;
-		}
-	}
+	const last_char_trimmed = stringInUTF8.slice(0, stringInUTF8.length - last_char_index)
 
-	const truncatedString = UTF8DECODER.decode(
-		stringInUTF8.slice(0, truncateIndex),
-	);
+	const truncatedString = UTF8DECODER.decode(last_char_trimmed);
+
 	return truncatedString;
 }
