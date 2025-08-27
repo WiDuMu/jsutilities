@@ -1,5 +1,3 @@
-import { sanitizeFilename } from "./fileSanitizer.js";
-
 /* Downloads a file on a webpage */
 
 /** The download button. We only need one :) */
@@ -11,7 +9,6 @@ a.hidden = true;
  * @param {File} file
  */
 export default function download(file) {
-	file.name = sanitizeFilename(file.name);
 	const link = URL.createObjectURL(file);
 	a.href = link;
 	a.download = file.name;
