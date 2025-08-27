@@ -1,5 +1,6 @@
 import { truncateToBytesWithUnicode } from "./truncation";
 
+/** The maximum file length. */
 const MAX_NAME_LENGTH = 255;
 
 /**
@@ -13,7 +14,9 @@ const DISALLOWED_FILENAMES_REGEX = /(\.|\.\.|~)|(con|prn|aux|nul|com[0-9¹²³]|
 /**
  * Removed Window's banned ones and the unicode control sequences.
  */
-const DISALLOWED_CHARACTERS_REGEX = /[<>:"\/\\\|\?\*\u0000-\u001F\u0080-\u009f]/gm
+
+// biome-ignore lint/suspicious/noControlCharactersInRegex: There should be no control characters in a string but I can't garuntee it.
+const  DISALLOWED_CHARACTERS_REGEX = /[<>:"\/\\\|\?\*\u0000-\u001F\u0080-\u009f]/gm
 
 /**
  * @typedef {Object} FilenameSanitizerOptions
@@ -33,12 +36,15 @@ export function sanitizeFilename(filename, options) {
    filename = filename.normalize("NFC") // Convert unicode into a standard form.
                .replace(DISALLOWED_CHARACTERS_REGEX, options.replacement);
 
+   const fileExtIndex = filename.lastIndexOf(".");
+   const fileExt = filename.slice(fileExtIndex);
+   filename = filename.slice(0, fileExtIndex);
+
    if (filename.match(DISALLOWED_FILENAMES_REGEX)) {
       filename = "unknown";
    }
 
-   filename = truncateToBytesWithUnicode(filename, MAX_NAME_LENGTH);
-
-   filename = filename.slice(0, MAX_NAME_LENGTH);
-   return filename.length > MAX_NAME_LENGTH ? filename.slice(0, MAX_NAME_LENGTH) : filename;
+   filename = truncateToBytesWithUnicode(filename, MAX_NAME_LENGTH - fileExt.length);
+   filename += fileExt; // If a string length error occurred it's right here.
+   return filename;
 }
