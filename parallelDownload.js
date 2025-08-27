@@ -1,10 +1,16 @@
-/** 
+/**
  * Downloads, in parallel, the urls provided as blobs
- * @param {string[]} urls
+ * @param {(string | RequestInfo)[]} urls
+ * @param {RequestInit[] | undefined} requestInits a list of objects containing custom settings for a request.
  * @returns {Promise<Blob[]>}
  */
-export async function parallelDownloadBlob(urls) {
-	const requests = urls.map(url => fetch(url));
+export async function parallelDownloadBlob(urls, requestInits) {
+	const requests = urls.map((url, index) => {
+		return fetch(
+			url,
+			requestInits && requestInits.length > index ? requestInits[index] : {},
+		);
+	});
 	const responses = await Promise.all(requests);
 	const data = responses.map((response) => response.blob());
 	return Promise.all(data);
@@ -12,23 +18,35 @@ export async function parallelDownloadBlob(urls) {
 
 /**
  * Downloads, in parallel, the urls provided
- * @param {string[]} urls
+ * @param {(string | RequestInfo)[]} urls
+ * @param {RequestInit[] | undefined} requestInits a list of objects containing custom settings for a request.
  * @returns {Promise<string[]>}
  */
-export default async function parallelDownloadText(urls) {
-	const requests = urls.map(url => fetch(url));
+export default async function parallelDownloadText(urls, requestInits) {
+	const requests = urls.map((url, index) => {
+		return fetch(
+			url,
+			requestInits && requestInits.length > index ? requestInits[index] : {},
+		);
+	});
 	const responses = await Promise.all(requests);
 	const data = responses.map((response) => response.text());
 	return Promise.all(data);
 }
 
-/** 
+/**
  * Downloads, in parallel, the urls provided as json
- * @param {string[]} urls
+ * @param {(string | RequestInfo)[]} urls
+ * @param {RequestInit[] | undefined} requestInits a list of objects containing custom settings for a request.
  * @returns {Promise<any[]>}
  */
-export async function parallelDownloadJson(urls) {
-	const requests = urls.map(url => fetch(url));
+export async function parallelDownloadJson(urls, requestInits) {
+	const requests = urls.map((url, index) => {
+		return fetch(
+			url,
+			requestInits && requestInits.length > index ? requestInits[index] : {},
+		);
+	});
 	const responses = await Promise.all(requests);
 	const data = responses.map((response) => response.json());
 	return Promise.all(data);

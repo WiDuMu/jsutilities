@@ -1,4 +1,4 @@
-const alpha =
+export const alpha =
 	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&()[]";
 /** Scrambles a text to reveal it in a "hackery" effect.
  * @param {string} text Text to scramble it to
